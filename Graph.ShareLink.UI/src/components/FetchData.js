@@ -48,21 +48,32 @@ export default class FetchData extends React.Component {
                 items.push({ ...item, shared: ids });
             });
 
-            const paths = [...new Set(data.map(x => x.t))];
+            const paths = [...new Set(data.map(x => x.webUrl))];
             var items_modified= []
-            paths.forEach(function(item, index) {    
-                var res= data.filter(function(a){         
-                    if(a.path === item)
+            paths.forEach(function(item, index) {   
+                var genItem =  data.filter(function(a){         
+                    if(a.webUrl === item)
                         return a;
-                }).map(function( obj ) {
-                    return obj.sharedWith;
                 });
-                items_modified.push({id: index, t: item, s: res}); 
+                var read= data.filter(function(a){         
+                    if(a.webUrl === item && a.permission === "Read")
+                        return a;
+                }).map(function(obj) {
+                    return {name: obj.sharedWith.split('|')[0], email:obj.sharedWith.split('|')[1]};
+                });
+                var write= data.filter(function(a){         
+                    if(a.webUrl === item && a.permission === "Write")
+                        return a;
+                }).map(function(obj) {
+                    return {name: obj.sharedWith.split('|')[0], email:obj.sharedWith.split('|')[1]};
+                });
+                items_modified.push({id: genItem[0].id, name:genItem[0].name, webUrl: item, shared_read: read, shared_write: write}); 
             });
-
-            console.log(items);
+            //console.log(items);
+            console.log("Data",items);
+            console.log(items_modified);
             if (data) {
-                this.setState({...this.state, driveItems: items, loading: false });
+                this.setState({...this.state, driveItems: items_modified, loading: false });
             }
         }
     }
@@ -101,8 +112,8 @@ export default class FetchData extends React.Component {
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Share with</th>
-                                <th>Permission to Provide</th>
+                                <th>Read</th>
+                                <th>Write</th>
                                 <th>Share Link</th>
                             </tr>
                         </thead>
@@ -112,8 +123,9 @@ export default class FetchData extends React.Component {
                                     index={index} id={item.id}
                                     name={item.name}
                                     webUrl={item.webUrl}
-                                    users={item.shared}
-                                    permission={item.permission}
+                                    users_read={item.shared_read}
+                                    users_write={item.shared_write}
+                                    /*permission={item.permission}*/
                                     accessToken={this.state.accessToken} />
                             ))}
                         </tbody>

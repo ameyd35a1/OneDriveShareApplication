@@ -36,19 +36,20 @@ export async function getDriveItemsFromData(accessToken) {
     return items;
 }
 
-export async function postShareItem(item, accessToken) {
+export async function postShareItem(items, id, permission, accessToken) {
     const client = getAuthenticatedClient(accessToken);
     if (client) {
-        const emails = item.shared.map((item) => { return { "email": item.email } });
+        //const emails = item.shared.map((item) => { return { "email": item.email } });
+        const emails = items.map((item) => { return { "email": item.email } });
         const message = {
             recipients: emails,
             message: "Please find this files shared on the OneDrive",
             requireSignIn: true,
             sendInvitation: true,
-            roles: [item.permission]
+            roles: [permission]
         };
 
-        const res = await client.api(`me/drive/items/${item.id}/invite`).post(message);
+        const res = await client.api(`me/drive/items/${id}/invite`).post(message);
         const responseStatus = (res && res.value && res.value.length > 0) ? 'Success' : 'Error';
         return responseStatus;
     }    
