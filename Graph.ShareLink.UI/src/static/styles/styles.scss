@@ -1,0 +1,74 @@
+﻿@import 'themes.scss';
+@import 'themify.scss';
+
+$themeColor: #121212;
+$personBandColor: #bb86fc;
+$darkbg: #454d55;
+$textLight: white;
+$darkLink: #03DAC5;
+
+body{
+    
+    @include themify($themes) {
+        /*background-color: $themeColor;*/
+        background-color: themed('backgroundColor');
+    }
+}
+
+#app {
+
+    .jumbotron {
+        /*background-color: $darkbg;
+        color: $textLight;*/
+        @include themify($themes) {
+            color: themed('textColor');
+            background-color: themed('text-background');
+        }
+        padding: 4em 2em 1em 2em;
+    }
+
+    #content {
+        table {
+            a {
+                @include themify($themes) {
+                    color: themed('link');
+                }
+            }
+
+            tr {
+                td:last-child {
+                    vertical-align: middle;
+
+                    button {
+                        width: 80px;
+                    }
+                }
+            }
+        }
+    }
+
+    .person {
+        @include themify($themes) {
+            background-color: themed('personBandColor');
+        }
+
+        border-radius: 5px;
+        display: inline-block;
+        padding: 5px;
+        margin-right: 8px;
+        min-width: 100px;
+
+        span:first-child {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        span:last-child {
+            cursor: pointer;
+            margin-right: 3px;
+            position: relative;
+            top: -1px;
+            float: right;
+        }
+    }
+}
